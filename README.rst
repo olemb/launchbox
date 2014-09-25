@@ -1,11 +1,11 @@
 Launchbox
 =========
 
-Command Launcher with tab completion and full shell commands.
+Command launcher with tab completion and full shell commands
 
 Launchbox opens a text box in the center of the screen where you can
-type a command line which will be run when you press return. Tab and
-shift-tab can be used to cycle through tab completions.
+type a command line which will be run in your shell. Tab and shift-tab
+can be used to cycle through tab completions.
 
 Launchbox looks for the enviromnent variable ``$SHELL``. If this is
 not found it will use ``/bin/bash``. It traverses the shell's

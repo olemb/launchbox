@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Launchbox - Command Launcher with tab completion and full shell commands.
+Launchbox - Command launcher with tab completion and full shell commands.
 
 Keys:
 
