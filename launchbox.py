@@ -45,7 +45,10 @@ def get_commands():
     for dirname in get_path():
         if os.path.isdir(dirname):
             for command in os.listdir(dirname):
-                commands.add(command)
+                filename = os.path.join(dirname, command)
+                if not os.path.isdir(filename):
+                    if os.access(filename, os.X_OK):
+                        commands.add(command)
 
     commands = list(set(commands))
     commands.sort()
