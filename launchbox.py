@@ -99,21 +99,21 @@ class Completer(object):
             self.current %= len(self.commands)
 
             return self.commands[self.current]
- 
+
 
 def center_window(root):
     # From https://bbs.archlinux.org/viewtopic.php?pid=1166787
-    
+
     # Apparently a common hack to get the window size. Temporarily hide the
     # window to avoid update_idletasks() drawing the window in the wrong
     # position.
     root.withdraw()
     root.update_idletasks()  # Update "requested size" from geometry manager
-    
+
     x = (root.winfo_screenwidth() - root.winfo_reqwidth()) / 2
     y = (root.winfo_screenheight() - root.winfo_reqheight()) / 2
     root.geometry("+%d+%d" % (x, y))
-    
+
     # This seems to draw the window frame immediately, so only call deiconify()
     # after setting correct window position
     root.deiconify()
@@ -121,18 +121,18 @@ def center_window(root):
 
 class Launcher(object):
     def __init__(self):
-        root = Tk()
+        root = Tk(className="launchbox")
         entry = Entry(root)
         entry.pack(padx=10, pady=10)
-        
+
         font = tkFont.nametofont(entry['font'])
         font.config(size=40)
-        
+
         root.bind('<Escape>', lambda _: self.window.quit())
         root.bind('<Return>', lambda _: self.run())
         root.bind('<Key>', self.handle_key)
 
-        entry.focus_force()        
+        entry.focus_force()
         center_window(root)
 
         self.window = root
@@ -141,7 +141,7 @@ class Launcher(object):
 
     def get_text(self):
         return self.entry.get().strip()
- 
+
     def mainloop(self):
         self.window.mainloop()
 
