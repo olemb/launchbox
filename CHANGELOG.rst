@@ -1,4 +1,4 @@
-1.0.1 - 
+1.0.1 - 2014-09-27
 ------------------
 
 * Changed the WM_CLASS from the default "Tk" to "Launchbox" to make it
