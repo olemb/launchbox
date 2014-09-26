@@ -112,7 +112,7 @@ def center_window(root):
 
     x = (root.winfo_screenwidth() - root.winfo_reqwidth()) / 2
     y = (root.winfo_screenheight() - root.winfo_reqheight()) / 2
-    root.geometry("+%d+%d" % (x, y))
+    root.geometry('+%d+%d' % (x, y))
 
     # This seems to draw the window frame immediately, so only call deiconify()
     # after setting correct window position
@@ -121,7 +121,7 @@ def center_window(root):
 
 class Launcher(object):
     def __init__(self):
-        root = Tk(className="launchbox")
+        root = Tk(className='launchbox')
         entry = Entry(root)
         entry.pack(padx=10, pady=10)
 
