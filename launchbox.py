@@ -65,40 +65,42 @@ def run_command(command):
 class Completer(object):
     """Tab completer."""
     def __init__(self):
-        self.start = ''
         self.commands = []
         self.current = -1
+        # This signals that commands need to be 
+        self.starting_string = ''
+        self.starting_string_updated = False
 
-    def update(self, text):
-        """Update tab completion starting string.
+    def update_starting_string(self, string):
+        """Set tab completion starting string.
 
         text is a string which will be stripped and used
         as a starting point for tab completion."""
-        start = text.strip()
-        if start != self.start:
-            self.start = start
+        string = string.strip()
+        if string != self.starting_string:
+            self.starting_string = string
+            self.starting_string_updated = True
+
+    def _cycle(self, step):
+        if self.starting_string_updated:
+            # Get command list and reset index.
             self.commands = [c for c in get_commands() \
-                             if c.startswith(self.start)]
-            self.current = -1
-            self._needs_get_commands = True
+                             if c.startswith(self.starting_string)]
+            self.index = -1
+            self.starting_string_updated = False
 
-    def next(self, reverse=False):
-        """Return the next command that starts with self.start.
-
-        Calling this repeatedly will cycle through all matching
-        commands. If reverse=True is passed it will instead return the
-        previous command."""
         if len(self.commands) == 0:
-            self.current = -1
-            return ''
+            return self.starting_string
         else:
-            if reverse:
-                self.current -= 1
-            else:
-                self.current += 1
+            self.current += step
             self.current %= len(self.commands)
-
             return self.commands[self.current]
+
+    def next(self):
+        return self._cycle(1)
+
+    def prev(self):
+        return self._cycle(-1)
 
 
 def center_window(root):
@@ -157,30 +159,28 @@ class Launcher(object):
 
         # Delete text with shift-backspace.
         if (event.keysym, event.state) == ('Tab', 0):
-            self.handle_tab()
+            self.set_text(self.completer.next())
             return 'break'
         elif event.keysym in ('Tab', 'ISO_Left_Tab') and event.state == 1:
             # I don't know why this is suddenly ISO_Left_Tab when you
             # hold down space.
-            self.handle_tab(reverse=True)
+            self.set_text(self.completer.prev())
             return 'break'
         elif (event.keysym, event.state) == ('BackSpace', 1):
             self.entry.delete(0, END)
-            self.completer.update(self.entry.get())
+            self.completer.update_starting_string(self.get_text())
             return 'break'
         elif event.char != '':
-            self.completer.update(self.entry.get())
+            self.completer.update_starting_string(self.get_text())
 
-    def handle_tab(self, reverse=False):
+    def set_text(self, text):
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/entry.html
-        if self.completer.commands:
-            text = self.completer.next(reverse=reverse) + ' '
-        else:
-            text = self.entry.get().strip()
-
         self.entry.delete(0, END)
         self.entry.insert(0, text)
         self.entry.select_range(END, END)
+
+    def get_text(self):
+        return self.entry.get().strip()
 
 
 if __name__ == '__main__':

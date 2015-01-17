@@ -1,7 +1,14 @@
+1.0.2 - 
+------------------
+
+* command list is now read only when necessary. The command list was
+  re-read on every keystroke which caused a lot of lag and CPU usage.
+
+
 1.0.1 - 2014-09-27
 ------------------
 
-* Changed the WM_CLASS from the default "Tk" to "Launchbox" to make it
+* changed the WM_CLASS from the default "Tk" to "Launchbox" to make it
   easy to make the window floating in XMonad (and other tiling
   wm:s). (Patch by Jonas Juselius.)
 
