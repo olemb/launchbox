@@ -1,4 +1,4 @@
-1.0.2 - 
+1.0.2 - 2015-01-17
 ------------------
 
 * command list is now read only when necessary. The command list was

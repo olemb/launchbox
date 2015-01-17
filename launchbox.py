@@ -24,7 +24,7 @@ import tkFont
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
 __license__ = 'MIT'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 __url__ = 'http://github.com/olemb/launchbox/'
 
 SHELL = os.environ.get('SHELL', '/bin/bash')
