@@ -12,7 +12,7 @@ Keys:
     escape          - close window
 
 Launchbox will use the shell found in $SHELL or default to
-/bin/bash. It uses the shell to get available commands (found by run
+/bin/sh. It uses the shell to get available commands (found by run
 the shell and having it echo its $PATH) and to run the command (which
 can be a full command line).
 """
@@ -27,7 +27,8 @@ __license__ = 'MIT'
 __version__ = '1.0.2'
 __url__ = 'http://github.com/olemb/launchbox/'
 
-SHELL = os.environ.get('SHELL', '/bin/bash')
+DEFAULT_SHELL = '/bin/sh'
+SHELL = os.environ.get('SHELL', DEFAULT_SHELL)
 
 
 def get_path():

@@ -5,6 +5,9 @@
 
 * Tkinter now version works in Python 3.
 
+* switched default shell to ``/bin/sh``. (Not everyone has
+  ``/bin/bash`` installed.)
+
 * added proper argument parsing.
 
 
