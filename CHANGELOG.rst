@@ -1,7 +1,9 @@
 1.1.0 - 
 ------------------
 
-* added Gtk version (selected with --gtk flag)
+* added Gtk version (selected with --gtk2 flag)
+
+* Tkinter now version works in Python 3.
 
 * added proper argument parsing.
 

@@ -21,7 +21,7 @@ Tkinter::
 
 Gtk 2 (doesn't work in Python 3)::
 
-    lauchbox --gtk
+    lauchbox --gtk2
 
 A port to Gtk+ 3 is almost complete.
 

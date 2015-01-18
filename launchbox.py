@@ -117,17 +117,29 @@ def center_window(root):
     root.deiconify()
 
 
+def import_tk():
+    """Return (tkinter, tkinter.font)"""
+    try:
+        # Python 3.
+        import tkinter
+        import tkinter.font
+        return (tkinter, tkinter.font)
+    except ImportError:
+        # Python 2.
+        import Tkinter
+        import tkFont
+        return (Tkinter, tkFont)
+
+
 class LauncherTk(object):
     def __init__(self):
-        import Tkinter as tk
-        import tkFont
-        self.tk = tk
+        self.tk, self.tkfont = import_tk()
 
-        root = tk.Tk(className='launchbox')
-        entry = tk.Entry(root)
+        root = self.tk.Tk(className='launchbox')
+        entry = self.tk.Entry(root)
         entry.pack(padx=10, pady=10)
 
-        font = tkFont.nametofont(entry['font'])
+        font = self.tkfont.nametofont(entry['font'])
         font.config(size=40)
 
         root.bind('<Escape>', lambda _: self.window.quit())
@@ -185,10 +197,10 @@ class LauncherTk(object):
         return self.entry.get().strip()
 
 
-class LauncherGtk(object):
+class LauncherGtk2(object):
     def __init__(self):
-        # import pygtk
-        # pygtk.require('2.0')
+        import pygtk
+        pygtk.require('2.0')
         import gtk
         import pango
 
@@ -284,7 +296,7 @@ def parse_args():
                             formatter_class=RawTextHelpFormatter)
     arg = parser.add_argument
 
-    arg('--gtk', dest='gtk', action='store_true', default=False)
+    arg('--gtk2', dest='gtk2', action='store_true', default=False)
 
     return parser.parse_args()
 
@@ -292,8 +304,8 @@ def parse_args():
 def main():
     args = parse_args()
 
-    if args.gtk:
-        Class = LauncherGtk
+    if args.gtk2:
+        Class = LauncherGtk2
     else:
         Class = LauncherTk
 
