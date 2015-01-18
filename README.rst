@@ -8,14 +8,28 @@ type a command line which will be run in your shell. Tab and shift-tab
 can be used to cycle through tab completions.
 
 Launchbox looks for the enviromnent variable ``$SHELL``. If this is
-not found it will use ``/bin/bash``. It traverses the shell's
-``$PATH`` variable to find commands for tab completion.
+not found it will use ``/bin/sh``. It traverses the shell's ``$PATH``
+variable to find commands for tab completion.
+
+
+Usage
+-----
+
+Tkinter::
+
+    launchbox
+
+Gtk 2 (doesn't work in Python 3)::
+
+    lauchbox --gtk
+
+A port to Gtk+ 3 is almost complete.
 
 
 Requirements
 ------------
 
-Python 2.7 or higher and Tkinter.
+Python 2.7 or higher and Tkinter or pygtk.
 
 
 Git Repository
@@ -35,6 +49,9 @@ shift-tab
 
 shift-backspace
   delete all text
+
+ctrl-backspace
+  delete word for word (Gtk only)
 
 enter
   run command
