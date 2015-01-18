@@ -196,6 +196,8 @@ class LauncherGtk(object):
 
         self.gtk = gtk
 
+        self.gtk.gdk.set_program_class('launchbox')
+
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.connect('delete_event', self.on_delete_event)
         self.window.connect('destroy', self.on_destroy)
