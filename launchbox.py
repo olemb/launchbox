@@ -297,13 +297,20 @@ def parse_args():
                             formatter_class=RawTextHelpFormatter)
     arg = parser.add_argument
 
-    arg('--gtk2', dest='gtk2', action='store_true', default=False)
+    arg('--gtk2', dest='gtk2', action='store_true', default=False,
+        help='use Gtk 2 window. The default is Tkinter.')
+    arg('--shell', dest='shell', action='store', default=SHELL,
+        help=('select shell. This overrides the $SHELL variable.'))
 
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
+
+    shell = args.shell
+    if not (os.path.isfile(shell) and os.access(shell, os.X_OK)):
+        return 'Shell not found: {}'.format(shell)
 
     if args.gtk2:
         Class = LauncherGtk2
