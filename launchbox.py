@@ -87,7 +87,7 @@ class Completer(object):
             self.current = -1
 
         if len(self.commands) == 0:
-            return self._start
+            return self._text
         else:
             self.current += step
             self.current %= len(self.commands)
