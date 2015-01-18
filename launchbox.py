@@ -63,32 +63,28 @@ def run_command(command):
 class Completer(object):
     """Tab completer."""
     def __init__(self):
-        self.commands = []
+        self.commands = None
         self.current = -1
-        # This signals that commands need to be 
-        self.starting_string = ''
-        self.starting_string_updated = False
+        self._text = ''
 
-    def update_starting_string(self, string):
-        """Set tab completion starting string.
+    def get_text(self):
+        return text
 
-        text is a string which will be stripped and used
-        as a starting point for tab completion."""
-        string = string.strip()
-        if string != self.starting_string:
-            self.starting_string = string
-            self.starting_string_updated = True
+    def set_text(self, text):
+        if text != self._text:
+            self.commands = None
+            self.current = -1
+            self._text = text
 
     def _cycle(self, step):
-        if self.starting_string_updated:
+        if self.commands is None:
             # Get command list and reset index.
             self.commands = [c for c in get_commands() \
-                             if c.startswith(self.starting_string)]
-            self.index = -1
-            self.starting_string_updated = False
+                             if c.startswith(self._text)]
+            self.current = -1
 
         if len(self.commands) == 0:
-            return self.starting_string
+            return self._start
         else:
             self.current += step
             self.current %= len(self.commands)
@@ -172,10 +168,10 @@ class LauncherTk(object):
         elif key == 'BackSpace' and mod == SHIFT:
             # Clear text.
             self.set_text('')
-            self.completer.update_starting_string('')
+            self.completer.set_text('')
             return 'break'
         elif event.char != '':
-            self.completer.update_starting_string(self.get_text())
+            self.completer.set_text(self.get_text())
 
     def set_text(self, text):
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/entry.html
@@ -249,7 +245,7 @@ class LauncherGtk(object):
             self.quit()
         elif key == 'BackSpace' and self.shift_held(event):
             self.set_text('')
-            self.completer.update_starting_string('')
+            self.completer.set_text('')
             return True
         elif key == 'Return':
             command = self.get_text()
@@ -261,12 +257,12 @@ class LauncherGtk(object):
         key = self.gtk.gdk.keyval_name(event.keyval)
 
 
-        # start = len(self.completer.starting_string)
+        # start = len(self.completer.get_text())
         # end = len(text)
         # self.entry.set_position(start)
         # self.entry.select_region(start, end)
         if len(key) == 1 or key in ['BackSpace', 'Delete']:
-            self.completer.update_starting_string(self.get_text())
+            self.completer.set_text(self.get_text())
 
     def on_delete_event(self, widget, event, data=None):
         return False
