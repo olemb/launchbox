@@ -19,6 +19,7 @@ can be a full command line).
 from __future__ import print_function
 import os
 import sys
+from argparse import ArgumentParser, RawTextHelpFormatter
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -278,11 +279,26 @@ class LauncherGtk(object):
         self.gtk.main()
 
 
-if __name__ == '__main__':
-    if '-h' in sys.argv[1:] or '--help' in sys.argv[1:]:
-        print(__doc__)
-    elif '--gtk' in sys.argv[1:]:
-        LauncherGtk().main()
-    else:
-        LauncherTk().main()
+def parse_args():
+    parser = ArgumentParser(description=__doc__,
+                            formatter_class=RawTextHelpFormatter)
+    arg = parser.add_argument
 
+    arg('--gtk', dest='gtk', action='store_true', default=False)
+
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+
+    if args.gtk:
+        Class = LauncherGtk
+    else:
+        Class = LauncherTk
+
+    Class().main()
+
+
+if __name__ == '__main__':
+    sys.exit(main())
