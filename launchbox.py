@@ -7,6 +7,7 @@ Keys:
     tab             - cycle through tab completions
     shift-tab       - cycle backwards
     shift-backspace - delete all text
+    ctrl-backspace  - delete word for word (Gtk only)
     enter           - run command
     escape          - close window
 
