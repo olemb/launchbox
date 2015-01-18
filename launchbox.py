@@ -18,8 +18,6 @@ can be a full command line).
 from __future__ import print_function
 import os
 import sys
-from Tkinter import *
-import tkFont
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -121,10 +119,14 @@ def center_window(root):
     root.deiconify()
 
 
-class Launcher(object):
+class LauncherTk(object):
     def __init__(self):
-        root = Tk(className='launchbox')
-        entry = Entry(root)
+        import Tkinter as tk
+        import tkFont
+        self.tk = tk
+
+        root = tk.Tk(className='launchbox')
+        entry = tk.Entry(root)
         entry.pack(padx=10, pady=10)
 
         font = tkFont.nametofont(entry['font'])
@@ -144,7 +146,7 @@ class Launcher(object):
     def get_text(self):
         return self.entry.get().strip()
 
-    def mainloop(self):
+    def main(self):
         self.window.mainloop()
 
     def run(self):
@@ -154,37 +156,134 @@ class Launcher(object):
             self.window.quit()
 
     def handle_key(self, event):
-        # event.state == 0 for no modifiers
-        # event.state == 1 for shift
+        # event state values.
+        SHIFT = 1
+        CTRL = 4
 
-        # Delete text with shift-backspace.
-        if (event.keysym, event.state) == ('Tab', 0):
-            self.set_text(self.completer.next())
+        key = event.keysym
+        mod = event.state
+
+        if key in ['Tab', 'ISO_Left_Tab']:
+            if mod == SHIFT:
+                self.set_text(self.completer.prev())
+            else:
+                self.set_text(self.completer.next())
             return 'break'
-        elif event.keysym in ('Tab', 'ISO_Left_Tab') and event.state == 1:
-            # I don't know why this is suddenly ISO_Left_Tab when you
-            # hold down space.
-            self.set_text(self.completer.prev())
-            return 'break'
-        elif (event.keysym, event.state) == ('BackSpace', 1):
-            self.entry.delete(0, END)
-            self.completer.update_starting_string(self.get_text())
+        elif key == 'BackSpace' and mod == SHIFT:
+            # Clear text.
+            self.set_text('')
+            self.completer.update_starting_string('')
             return 'break'
         elif event.char != '':
             self.completer.update_starting_string(self.get_text())
 
     def set_text(self, text):
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/entry.html
-        self.entry.delete(0, END)
+        self.entry.delete(0, self.tk.END)
         self.entry.insert(0, text)
-        self.entry.select_range(END, END)
+        self.entry.select_range(self.tk.END, self.tk.END)
 
     def get_text(self):
         return self.entry.get().strip()
 
 
+class LauncherGtk(object):
+    def __init__(self):
+        # import pygtk
+        # pygtk.require('2.0')
+        import gtk
+        import pango
+
+        self.gtk = gtk
+
+        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window.connect('delete_event', self.on_delete_event)
+        self.window.connect('destroy', self.on_destroy)
+        self.window.padding = 10
+
+        self.alignment = gtk.Alignment()
+        self.alignment.set_padding(10, 10, 10, 10)
+        self.window.add(self.alignment)
+
+        self.entry = gtk.Entry()
+        self.entry.set_width_chars(24)
+        self.entry.modify_font(pango.FontDescription('40'))
+        self.alignment.add(self.entry)
+        # self.window.set_focus(self.entry)
+
+        self.window.set_position(gtk.WIN_POS_CENTER)
+        self.window.show_all()
+        self.window.window.focus()
+
+        self.completer = Completer()
+
+        self.window.add_events(gtk.gdk.KEY_PRESS_MASK)
+        self.entry.connect('key-press-event', self.on_key_press_event)
+        self.entry.connect('key-release-event', self.on_key_release_event)
+
+    def set_text(self, text):
+        self.entry.set_text(text)
+
+    def get_text(self):
+        return self.entry.get_text()
+
+    def shift_held(self, event):
+        return event.state & self.gtk.gdk.SHIFT_MASK
+
+    def ctrl_held(self, event):
+        return event.state & self.gtk.gdk.CONTROL_MASK
+
+    def on_key_press_event(self, window, event):
+        key = self.gtk.gdk.keyval_name(event.keyval)
+        if key in ['Tab', 'ISO_Left_Tab']:
+            if self.shift_held(event):
+                text = self.completer.prev()
+            else:
+                text = self.completer.next()
+            self.set_text(text)
+            self.entry.set_position(len(text))
+            return True
+        elif key == 'Escape':
+            self.quit()
+        elif key == 'BackSpace' and self.shift_held(event):
+            self.set_text('')
+            self.completer.update_starting_string('')
+            return True
+        elif key == 'Return':
+            command = self.get_text()
+            if command:
+                run_command(command)
+                self.quit()
+
+    def on_key_release_event(self, window, event):
+        key = self.gtk.gdk.keyval_name(event.keyval)
+
+
+        # start = len(self.completer.starting_string)
+        # end = len(text)
+        # self.entry.set_position(start)
+        # self.entry.select_region(start, end)
+        if len(key) == 1 or key in ['BackSpace', 'Delete']:
+            self.completer.update_starting_string(self.get_text())
+
+    def on_delete_event(self, widget, event, data=None):
+        return False
+
+    def on_destroy(self, widget, data=None):
+        self.quit()
+
+    def quit(self):
+        self.gtk.main_quit()
+
+    def main(self):
+        self.gtk.main()
+
+
 if __name__ == '__main__':
     if '-h' in sys.argv[1:] or '--help' in sys.argv[1:]:
         print(__doc__)
+    elif '--gtk' in sys.argv[1:]:
+        LauncherGtk().main()
     else:
-        Launcher().mainloop()
+        LauncherTk().main()
+
