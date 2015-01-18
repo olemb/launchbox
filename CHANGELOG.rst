@@ -1,7 +1,9 @@
 1.1.0 - 
 ------------------
 
-* added Gtk version.
+* added Gtk version (selected with --gtk flag)
+
+* added proper argument parsing.
 
 
 1.0.2 - 2015-01-17
