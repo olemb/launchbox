@@ -1,6 +1,8 @@
 Launchbox
 =========
 
+.. image:: screenshot.png
+
 Command launcher with tab completion and full shell commands
 
 Launchbox opens a text box in the center of the screen where you can
