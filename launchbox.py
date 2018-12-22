@@ -24,7 +24,6 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
 __license__ = 'MIT'
-__version__ = '1.0.2'
 __url__ = 'http://github.com/olemb/launchbox/'
 
 DEFAULT_SHELL = '/bin/sh'
@@ -137,8 +136,10 @@ class LauncherTk(object):
         self.tk, self.tkfont = import_tk()
 
         root = self.tk.Tk(className='launchbox')
+        root.configure(background='black')
         entry = self.tk.Entry(root)
         entry.pack(padx=10, pady=10)
+        entry.configure(background='black', foreground='#bbb')
 
         font = self.tkfont.nametofont(entry['font'])
         font.config(size=40)
