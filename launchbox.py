@@ -138,7 +138,7 @@ class LauncherTk(object):
         root = self.tk.Tk(className='launchbox')
         root.configure(background='black')
         entry = self.tk.Entry(root)
-        entry.pack(padx=10, pady=10)
+        entry.pack(padx=8, pady=8)
         entry.configure(background='black', foreground='#bbb')
 
         font = self.tkfont.nametofont(entry['font'])
