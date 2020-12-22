@@ -50,8 +50,7 @@ def get_commands():
                     if os.access(filename, os.X_OK):
                         commands.add(command)
 
-    commands = list(set(commands))
-    commands.sort()
+    commands = sorted(set(commands))
 
     return commands
 
@@ -61,32 +60,30 @@ def run_command(command):
     os.system('(echo {} | {})&'.format(command, SHELL))
 
 
-
 class Completer(object):
     """Tab completer."""
     def __init__(self):
         self.commands = None
         self.current = -1
-        self._text = ''
+        self._prefix = ''
 
-    def get_text(self):
-        return text
-
-    def set_text(self, text):
-        if text != self._text:
+    def set_prefix(self, prefix):
+        if prefix != self._prefix:
             self.commands = None
             self.current = -1
-            self._text = text
+            self._prefix = prefix
 
     def _cycle(self, step):
         if self.commands is None:
             # Get command list and reset index.
-            self.commands = [c for c in get_commands() \
-                             if c.startswith(self._text)]
+            self.commands = [
+                command for command in get_commands()
+                if command.startswith(self._prefix)
+            ]
             self.current = -1
 
         if len(self.commands) == 0:
-            return self._text
+            return self._prefix
         else:
             self.current += step
             self.current %= len(self.commands)
@@ -155,9 +152,6 @@ class LauncherTk(object):
         self.entry = entry
         self.completer = Completer()
 
-    def get_text(self):
-        return self.entry.get().strip()
-
     def main(self):
         self.window.mainloop()
 
@@ -170,12 +164,12 @@ class LauncherTk(object):
     def handle_key(self, event):
         # event state values.
         SHIFT = 1
-        CTRL = 4
+        # CTRL = 4
 
         key = event.keysym
         mod = event.state
 
-        if key in ['Tab', 'ISO_Left_Tab']:
+        if key in {'Tab', 'ISO_Left_Tab'}:
             if mod == SHIFT:
                 self.set_text(self.completer.prev())
             else:
@@ -184,10 +178,11 @@ class LauncherTk(object):
         elif key == 'BackSpace' and mod == SHIFT:
             # Clear text.
             self.set_text('')
-            self.completer.set_text('')
+            self.completer.set_prefix('')
             return 'break'
         elif event.char != '':
-            self.completer.set_text(self.get_text())
+            # Any other visible or control character.
+            self.completer.set_prefix(self.get_text())
 
     def set_text(self, text):
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/entry.html
@@ -261,7 +256,7 @@ class LauncherGtk2(object):
             self.quit()
         elif key == 'BackSpace' and self.shift_held(event):
             self.set_text('')
-            self.completer.set_text('')
+            self.completer.set_prefix('')
             return True
         elif key == 'Return':
             command = self.get_text()
@@ -271,7 +266,6 @@ class LauncherGtk2(object):
 
     def on_key_release_event(self, window, event):
         key = self.gtk.gdk.keyval_name(event.keyval)
-
 
         # start = len(self.completer.get_text())
         # end = len(text)
