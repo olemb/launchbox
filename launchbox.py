@@ -18,6 +18,7 @@ can be a full command line).
 """
 import os
 import sys
+from pathlib import Path
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 __author__ = 'Ole Martin Bjorndalen'
@@ -28,29 +29,26 @@ __url__ = 'http://github.com/olemb/launchbox/'
 SHELL = os.environ.get('SHELL', '/bin/sh')
 
 
-def get_path():
-    command = "{} -c 'echo $PATH'".format(SHELL)
-    path = os.popen(command).read().strip().split(':')
-    path = [os.path.expanduser(dirname) for dirname in path]
-
-    return path
+def iter_path():
+    command = f"{SHELL} -c 'echo $PATH'"
+    with os.popen(command) as pipe:
+        for dirname in pipe.read().strip().split(':'):
+            yield Path(dirname).expanduser()
 
 
 def get_commands():
     """Get a sorted list of all commands available to the shell."""
     commands = set()
 
-    for dirname in get_path():
-        if os.path.isdir(dirname):
-            for command in os.listdir(dirname):
-                filename = os.path.join(dirname, command)
-                if not os.path.isdir(filename):
-                    if os.access(filename, os.X_OK):
-                        commands.add(command)
+    for dirname in iter_path():
+        if not dirname.is_dir():
+            continue
 
-    commands = sorted(set(commands))
+        for command in dirname.iterdir():
+            if command.is_file() and os.access(command, os.X_OK):
+                commands.add(command)
 
-    return commands
+    return sorted(commands)
 
 
 def run_command(command):
@@ -102,9 +100,9 @@ def center_window(root):
     root.withdraw()
     root.update_idletasks()  # Update "requested size" from geometry manager
 
-    x = (root.winfo_screenwidth() - root.winfo_reqwidth()) / 2
-    y = (root.winfo_screenheight() - root.winfo_reqheight()) / 2
-    root.geometry('+%d+%d' % (x, y))
+    x = (root.winfo_screenwidth() - root.winfo_reqwidth()) // 2
+    y = (root.winfo_screenheight() - root.winfo_reqheight()) // 2
+    root.geometry(f'+{x}+{y}')
 
     # This seems to draw the window frame immediately, so only call deiconify()
     # after setting correct window position
