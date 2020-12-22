@@ -26,8 +26,7 @@ __email__ = 'ombdalen@gmail.com'
 __license__ = 'MIT'
 __url__ = 'http://github.com/olemb/launchbox/'
 
-DEFAULT_SHELL = '/bin/sh'
-SHELL = os.environ.get('SHELL', DEFAULT_SHELL)
+SHELL = os.environ.get('SHELL', '/bin/sh')
 
 
 def get_path():
@@ -75,7 +74,6 @@ class Completer(object):
 
     def _cycle(self, step):
         if self.commands is None:
-            # Get command list and reset index.
             self.commands = [
                 command for command in get_commands()
                 if command.startswith(self._prefix)
@@ -288,24 +286,23 @@ class LauncherGtk2(object):
 
 
 def parse_args():
-    parser = ArgumentParser(description=__doc__,
-                            formatter_class=RawTextHelpFormatter)
-    arg = parser.add_argument
-
-    arg('--gtk2', dest='gtk2', action='store_true', default=False,
-        help='use Gtk 2 window. The default is Tkinter.')
-    arg('--shell', dest='shell', action='store', default=SHELL,
-        help=('select shell. This overrides the $SHELL variable.'))
+    parser = ArgumentParser(
+        description=__doc__,
+        formatter_class=RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        '--gtk2',
+        dest='gtk2',
+        action='store_true',
+        default=False,
+        help='use Gtk 2 window. The default is Tkinter.',
+    )
 
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-
-    shell = args.shell
-    if not (os.path.isfile(shell) and os.access(shell, os.X_OK)):
-        return 'Shell not found: {}'.format(shell)
 
     if args.gtk2:
         Class = LauncherGtk2
