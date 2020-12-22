@@ -16,7 +16,6 @@ Launchbox will use the shell found in $SHELL or default to
 the shell and having it echo its $PATH) and to run the command (which
 can be a full command line).
 """
-from __future__ import print_function
 import os
 import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -264,11 +263,6 @@ class LauncherGtk2(object):
 
     def on_key_release_event(self, window, event):
         key = self.gtk.gdk.keyval_name(event.keyval)
-
-        # start = len(self.completer.get_text())
-        # end = len(text)
-        # self.entry.set_position(start)
-        # self.entry.select_region(start, end)
         if len(key) == 1 or key in ['BackSpace', 'Delete']:
             self.completer.set_text(self.get_text())
 
