@@ -45,7 +45,7 @@ Keys
 
 tab
   cycle through tab completions
-    
+
 shift-tab
   cycle backwards
 

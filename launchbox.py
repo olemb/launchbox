@@ -111,16 +111,14 @@ def center_window(root):
 
 def import_tk():
     """Return (tkinter, tkinter.font)"""
-    try:
-        # Python 3.
-        import tkinter
-        import tkinter.font
-        return (tkinter, tkinter.font)
-    except ImportError:
-        # Python 2.
+    if sys.version_info.major == 2:
         import Tkinter
         import tkFont
         return (Tkinter, tkFont)
+    else:
+        import tkinter
+        import tkinter.font
+        return (tkinter, tkinter.font)
 
 
 class LauncherTk(object):
