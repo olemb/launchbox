@@ -21,6 +21,7 @@ import sys
 import tkinter
 import tkinter.font
 from pathlib import Path
+from collections import deque
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -61,23 +62,23 @@ class Completer:
     """Tab completer."""
     def __init__(self, commands):
         self.commands = commands
-        self.matches = commands
-        self.index = -1
+        self.matches = deque(commands)
 
     def set_prefix(self, prefix):
-        self.matches = [
+        self.matches = deque([
             command for command in self.commands
             if command.startswith(prefix)
-        ] or [prefix]
-        self.index = -1
+        ] or [prefix])
 
     def next(self):
-        self.index = (self.index + 1) % len(self.matches)
-        return self.matches[self.index]
+        value = self.matches.popleft()
+        self.matches.append(value)
+        return value
 
     def prev(self):
-        self.index = (self.index - 1) % len(self.matches)
-        return self.matches[self.index]
+        value = self.matches.pop()
+        self.matches.appendleft(value)
+        return value
 
 
 class Launcher:
