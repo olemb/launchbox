@@ -92,24 +92,25 @@ class Launcher:
     def __init__(self):
         self.tk = tkinter
 
-        root = self.tk.Tk(className='launchbox')
-        root.configure(background='black')
-        entry = self.tk.Entry(root)
+        window = self.tk.Tk(className='launchbox')
+        window.configure(background='black')
+        entry = self.tk.Entry(window)
         entry.pack(padx=8, pady=8)
         entry.configure(background='black', foreground='#bbb')
 
         font = tkinter.font.nametofont(entry['font'])
         font.config(size=40)
 
-        root.bind('<Escape>', lambda _: self.window.quit())
-        root.bind('<Return>', lambda _: self.run())
-        root.bind('<Key>', self.handle_key)
+        window.bind('<Escape>', lambda _: self.window.quit())
+        window.bind('<Return>', lambda _: self.run())
+        window.bind('<Key>', self.handle_key)
 
-        root.eval('tk::PlaceWindow . center')
+        window.eval('tk::PlaceWindow . center')
         entry.focus_force()
 
-        self.window = root
+        self.window = window
         self.entry = entry
+
         self.completer = Completer(get_commands())
 
     def main(self):
