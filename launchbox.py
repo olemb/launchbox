@@ -30,19 +30,20 @@ __url__ = 'http://github.com/olemb/launchbox/'
 
 SHELL = os.environ.get('SHELL', '/bin/sh')
 
-
-def iter_path():
+def get_path_dirs():
+    # Using a dict here instead of a set because we want them ordered.
+    dirs = {}
     command = f"{SHELL} -c 'echo $PATH'"
     with os.popen(command) as pipe:
         for dirname in pipe.read().strip().split(':'):
-            yield Path(dirname).expanduser()
-
+            dirs[Path(dirname).expanduser()] = True
+    return list(dirs)
 
 def get_commands():
     """Get a sorted list of all commands available to the shell."""
     commands = set()
 
-    for dirname in iter_path():
+    for dirname in get_path_dirs():
         if not dirname.is_dir():
             continue
 
