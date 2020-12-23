@@ -21,7 +21,6 @@ import sys
 import tkinter
 import tkinter.font
 from pathlib import Path
-from collections import deque
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -38,6 +37,7 @@ def get_path_dirs():
         for dirname in pipe.read().strip().split(':'):
             dirs[Path(dirname).expanduser()] = True
     return list(dirs)
+
 
 def get_commands():
     """Get a sorted list of all commands available to the shell."""
@@ -63,23 +63,29 @@ class Completer:
     """Tab completer."""
     def __init__(self, commands):
         self.commands = commands
-        self.matches = deque(commands)
+        self.matches = commands
+        self.index = None
 
     def set_prefix(self, prefix):
-        self.matches = deque([
+        self.matches = [
             command for command in self.commands
             if command.startswith(prefix)
-        ] or [prefix])
+        ] or [prefix]
+        self.index = None
 
     def next(self):
-        value = self.matches.popleft()
-        self.matches.append(value)
-        return value
+        if self.index is None:
+            self.index = 0
+        else:
+            self.index = (self.index + 1) % len(self.matches)
+        return self.matches[self.index]
 
     def prev(self):
-        value = self.matches.pop()
-        self.matches.appendleft(value)
-        return value
+        if self.index is None:
+            self.index = -1
+        else:
+            self.index = (self.index - 1) % len(self.matches)
+        return self.matches[self.index]
 
 
 class Launcher:
