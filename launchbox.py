@@ -21,6 +21,7 @@ import sys
 import tkinter
 import tkinter.font
 from pathlib import Path
+from collections import deque
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -59,37 +60,23 @@ def run_command(command):
 
 class Completer:
     """Tab completer."""
-    def __init__(self):
-        self.commands = None
-        self.current = -1
-        self._prefix = ''
+    def __init__(self, commands):
+        self.commands = commands
+        self.matches = commands
 
     def set_prefix(self, prefix):
-        if prefix != self._prefix:
-            self.commands = None
-            self.current = -1
-            self._prefix = prefix
-
-    def _cycle(self, step):
-        if self.commands is None:
-            self.commands = [
-                command for command in get_commands()
-                if command.startswith(self._prefix)
-            ]
-            self.current = -1
-
-        if len(self.commands) == 0:
-            return self._prefix
-        else:
-            self.current += step
-            self.current %= len(self.commands)
-            return self.commands[self.current]
+        self.matches = deque([
+            command for command in self.commands
+            if command.startswith(prefix)
+        ] or [prefix])
 
     def next(self):
-        return self._cycle(1)
+        self.matches.append(self.matches.popleft())
+        return self.matches[0]
 
     def prev(self):
-        return self._cycle(-1)
+        self.matches.appendleft(self.matches.pop())
+        return self.matches[0]
 
 
 class Launcher:
@@ -114,7 +101,7 @@ class Launcher:
 
         self.window = root
         self.entry = entry
-        self.completer = Completer()
+        self.completer = Completer(get_commands())
 
     def main(self):
         self.window.mainloop()
