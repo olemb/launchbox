@@ -62,7 +62,7 @@ class Completer:
     """Tab completer."""
     def __init__(self, commands):
         self.commands = commands
-        self.matches = commands
+        self.matches = deque(commands)
 
     def set_prefix(self, prefix):
         self.matches = deque([
