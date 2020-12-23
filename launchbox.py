@@ -109,21 +109,11 @@ def center_window(root):
     root.deiconify()
 
 
-def import_tk():
-    """Return (tkinter, tkinter.font)"""
-    if sys.version_info.major == 2:
-        import Tkinter
-        import tkFont
-        return (Tkinter, tkFont)
-    else:
-        import tkinter
-        import tkinter.font
-        return (tkinter, tkinter.font)
-
-
 class LauncherTk(object):
     def __init__(self):
-        self.tk, self.tkfont = import_tk()
+        import tkinter
+        import tkinter.font
+        self.tk = tkinter
 
         root = self.tk.Tk(className='launchbox')
         root.configure(background='black')
@@ -131,7 +121,7 @@ class LauncherTk(object):
         entry.pack(padx=8, pady=8)
         entry.configure(background='black', foreground='#bbb')
 
-        font = self.tkfont.nametofont(entry['font'])
+        font = tkinter.font.nametofont(entry['font'])
         font.config(size=40)
 
         root.bind('<Escape>', lambda _: self.window.quit())

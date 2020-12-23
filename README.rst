@@ -21,7 +21,7 @@ Tkinter::
 
     launchbox
 
-Gtk 2 (doesn't work in Python 3)::
+Gtk 2 (doesn't work yet)::
 
     lauchbox --gtk2
 
@@ -31,7 +31,7 @@ A port to Gtk+ 3 is almost complete.
 Requirements
 ------------
 
-Python 2.7 or higher and Tkinter or pygtk.
+Python 3.6 or higher and Tkinter or pygtk.
 
 
 Git Repository
