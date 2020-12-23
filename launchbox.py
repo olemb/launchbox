@@ -47,7 +47,7 @@ def get_commands():
 
         for command in dirname.iterdir():
             if command.is_file() and os.access(command, os.X_OK):
-                commands.add(command)
+                commands.add(str(command.name))
 
     return sorted(commands)
 
