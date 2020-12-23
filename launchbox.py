@@ -92,24 +92,6 @@ class Completer:
         return self._cycle(-1)
 
 
-def center_window(root):
-    # From https://bbs.archlinux.org/viewtopic.php?pid=1166787
-
-    # Apparently a common hack to get the window size. Temporarily hide the
-    # window to avoid update_idletasks() drawing the window in the wrong
-    # position.
-    root.withdraw()
-    root.update_idletasks()  # Update "requested size" from geometry manager
-
-    x = (root.winfo_screenwidth() - root.winfo_reqwidth()) // 2
-    y = (root.winfo_screenheight() - root.winfo_reqheight()) // 2
-    root.geometry(f'+{x}+{y}')
-
-    # This seems to draw the window frame immediately, so only call deiconify()
-    # after setting correct window position
-    root.deiconify()
-
-
 class Launcher:
     def __init__(self):
         self.tk = tkinter
@@ -127,8 +109,8 @@ class Launcher:
         root.bind('<Return>', lambda _: self.run())
         root.bind('<Key>', self.handle_key)
 
+        root.eval('tk::PlaceWindow . center')
         entry.focus_force()
-        center_window(root)
 
         self.window = root
         self.entry = entry
