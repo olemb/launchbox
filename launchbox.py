@@ -27,12 +27,9 @@ __email__ = 'ombdalen@gmail.com'
 __license__ = 'MIT'
 __url__ = 'http://github.com/olemb/launchbox/'
 
-SHELL = os.environ.get('SHELL', '/bin/sh')
-
 def iter_path():
     # Using a dict here instead of a set because we want them ordered.
-    command = f"{SHELL} -c 'echo $PATH'"
-    with os.popen(command) as pipe:
+    with os.popen('echo $PATH') as pipe:
         for dirname in pipe.read().strip().split(':'):
             yield Path(dirname).expanduser()
 
@@ -54,7 +51,7 @@ def get_commands():
 
 def run_command(command):
     """Run a command line in the shell."""
-    os.system(f'(echo {command} | {SHELL})&')
+    os.system(f'{command}&')
 
 
 class Completer:
