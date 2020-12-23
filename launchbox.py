@@ -18,8 +18,9 @@ can be a full command line).
 """
 import os
 import sys
+import tkinter
+import tkinter.font
 from pathlib import Path
-from argparse import ArgumentParser, RawTextHelpFormatter
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -109,10 +110,8 @@ def center_window(root):
     root.deiconify()
 
 
-class LauncherTk(object):
+class Launcher(object):
     def __init__(self):
-        import tkinter
-        import tkinter.font
         self.tk = tkinter
 
         root = self.tk.Tk(className='launchbox')
@@ -177,119 +176,8 @@ class LauncherTk(object):
         return self.entry.get().strip()
 
 
-class LauncherGtk2(object):
-    def __init__(self):
-        import pygtk
-        pygtk.require('2.0')
-        import gtk
-        import pango
-
-        self.gtk = gtk
-
-        self.gtk.gdk.set_program_class('launchbox')
-
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.connect('delete_event', self.on_delete_event)
-        self.window.connect('destroy', self.on_destroy)
-        self.window.padding = 10
-
-        self.alignment = gtk.Alignment()
-        self.alignment.set_padding(10, 10, 10, 10)
-        self.window.add(self.alignment)
-
-        self.entry = gtk.Entry()
-        self.entry.set_width_chars(24)
-        self.entry.modify_font(pango.FontDescription('40'))
-        self.alignment.add(self.entry)
-        # self.window.set_focus(self.entry)
-
-        self.window.set_position(gtk.WIN_POS_CENTER)
-        self.window.show_all()
-        self.window.window.focus()
-
-        self.completer = Completer()
-
-        self.window.add_events(gtk.gdk.KEY_PRESS_MASK)
-        self.entry.connect('key-press-event', self.on_key_press_event)
-        self.entry.connect('key-release-event', self.on_key_release_event)
-
-    def set_text(self, text):
-        self.entry.set_text(text)
-
-    def get_text(self):
-        return self.entry.get_text()
-
-    def shift_held(self, event):
-        return event.state & self.gtk.gdk.SHIFT_MASK
-
-    def ctrl_held(self, event):
-        return event.state & self.gtk.gdk.CONTROL_MASK
-
-    def on_key_press_event(self, window, event):
-        key = self.gtk.gdk.keyval_name(event.keyval)
-        if key in ['Tab', 'ISO_Left_Tab']:
-            if self.shift_held(event):
-                text = self.completer.prev()
-            else:
-                text = self.completer.next()
-            self.set_text(text)
-            self.entry.set_position(len(text))
-            return True
-        elif key == 'Escape':
-            self.quit()
-        elif key == 'BackSpace' and self.shift_held(event):
-            self.set_text('')
-            self.completer.set_prefix('')
-            return True
-        elif key == 'Return':
-            command = self.get_text()
-            if command:
-                run_command(command)
-                self.quit()
-
-    def on_key_release_event(self, window, event):
-        key = self.gtk.gdk.keyval_name(event.keyval)
-        if len(key) == 1 or key in ['BackSpace', 'Delete']:
-            self.completer.set_text(self.get_text())
-
-    def on_delete_event(self, widget, event, data=None):
-        return False
-
-    def on_destroy(self, widget, data=None):
-        self.quit()
-
-    def quit(self):
-        self.gtk.main_quit()
-
-    def main(self):
-        self.gtk.main()
-
-
-def parse_args():
-    parser = ArgumentParser(
-        description=__doc__,
-        formatter_class=RawTextHelpFormatter,
-    )
-    parser.add_argument(
-        '--gtk2',
-        dest='gtk2',
-        action='store_true',
-        default=False,
-        help='use Gtk 2 window. The default is Tkinter.',
-    )
-
-    return parser.parse_args()
-
-
 def main():
-    args = parse_args()
-
-    if args.gtk2:
-        Class = LauncherGtk2
-    else:
-        Class = LauncherTk
-
-    Class().main()
+    Launcher().main()
 
 
 if __name__ == '__main__':

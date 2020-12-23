@@ -2,6 +2,7 @@ Launchbox
 =========
 
 .. image:: screenshot.png
+   :alt: Screenshot
 
 Command launcher with tab completion and full shell commands
 
@@ -14,24 +15,10 @@ not found it will use ``/bin/sh``. It traverses the shell's ``$PATH``
 variable to find commands for tab completion.
 
 
-Usage
------
-
-Tkinter::
-
-    launchbox
-
-Gtk 2 (doesn't work yet)::
-
-    lauchbox --gtk2
-
-A port to Gtk+ 3 is almost complete.
-
-
 Requirements
 ------------
 
-Python 3.6 or higher and Tkinter or pygtk.
+Python 3.6 or higher and Tkinter.
 
 
 Git Repository
