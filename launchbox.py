@@ -54,10 +54,10 @@ def get_commands():
 
 def run_command(command):
     """Run a command line in the shell."""
-    os.system('(echo {} | {})&'.format(command, SHELL))
+    os.system(f'(echo {command} | {SHELL})&')
 
 
-class Completer(object):
+class Completer:
     """Tab completer."""
     def __init__(self):
         self.commands = None
@@ -110,7 +110,7 @@ def center_window(root):
     root.deiconify()
 
 
-class Launcher(object):
+class Launcher:
     def __init__(self):
         self.tk = tkinter
 
