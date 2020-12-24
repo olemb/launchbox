@@ -28,7 +28,6 @@ __license__ = 'MIT'
 __url__ = 'http://github.com/olemb/launchbox/'
 
 def iter_path():
-    # Using a dict here instead of a set because we want them ordered.
     with os.popen('echo $PATH') as pipe:
         for dirname in pipe.read().strip().split(':'):
             yield Path(dirname).expanduser()
