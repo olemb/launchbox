@@ -28,16 +28,11 @@ __license__ = 'MIT'
 __url__ = 'http://github.com/olemb/launchbox/'
 
 
-def iter_path():
-    for dirname in os.environ['PATH'].split(':'):
-        yield Path(dirname).expanduser()
-
-
 def get_commands():
     """Get a sorted list of all commands available to the shell."""
     commands = set()
 
-    for dirname in set(iter_path()):
+    for dirname in map(Path, set(os.environ['PATH'].split(':'))):
         if not dirname.is_dir():
             continue
 
