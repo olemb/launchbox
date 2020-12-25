@@ -27,10 +27,10 @@ __email__ = 'ombdalen@gmail.com'
 __license__ = 'MIT'
 __url__ = 'http://github.com/olemb/launchbox/'
 
+
 def iter_path():
-    with os.popen('echo $PATH') as pipe:
-        for dirname in pipe.read().strip().split(':'):
-            yield Path(dirname).expanduser()
+    for dirname in os.environ['PATH'].split(':'):
+        yield Path(dirname).expanduser()
 
 
 def get_commands():
