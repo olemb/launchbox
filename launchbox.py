@@ -48,11 +48,6 @@ def get_commands():
     return sorted(commands)
 
 
-def run_command(command):
-    """Run a command line in the shell."""
-    os.system(f'{command}&')
-
-
 class Completer:
     """Tab completer."""
     def __init__(self, commands):
@@ -113,7 +108,7 @@ class Launcher:
     def run(self):
         command = self.entry.get().strip()
         if command:
-            run_command(command)
+            os.system(f'{command}&')
             self.window.quit()
 
     def handle_key(self, event):
