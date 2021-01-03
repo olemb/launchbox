@@ -143,7 +143,7 @@ class Launcher:
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/entry.html
         self.entry.delete(0, tkinter.END)
         self.entry.insert(0, text)
-        self.entry.select_range(tkinter.END, tkinter.END)
+        self.entry.select_range(len(self.completer.prefix), tkinter.END)
 
     def get_text(self):
         return self.entry.get().strip()
