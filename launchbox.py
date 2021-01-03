@@ -47,11 +47,13 @@ def get_commands():
 class Completer:
     """Tab completer."""
     def __init__(self, commands):
+        self.prefix = ''
         self.commands = commands
         self.matches = commands
         self.index = None
 
     def set_prefix(self, prefix):
+        self.prefix = prefix
         self.matches = [
             command for command in self.commands
             if command.startswith(prefix)
@@ -82,11 +84,9 @@ class Launcher:
         # The completer will be created at the first keypress.
         self.completer = None
 
-        self.tk = tkinter
-
-        window = self.tk.Tk(className='launchbox')
+        window = tkinter.Tk(className='launchbox')
         window.configure(background='black')
-        entry = self.tk.Entry(window)
+        entry = tkinter.Entry(window)
         entry.pack(padx=8, pady=8)
         entry.configure(background='black', foreground='#bbb')
 
@@ -107,7 +107,7 @@ class Launcher:
         self.window.mainloop()
 
     def run(self):
-        command = self.entry.get().strip()
+        command = self.get_text()
         if command:
             os.system(f'{command}&')
             self.window.quit()
@@ -141,9 +141,9 @@ class Launcher:
 
     def set_text(self, text):
         # http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/entry.html
-        self.entry.delete(0, self.tk.END)
+        self.entry.delete(0, tkinter.END)
         self.entry.insert(0, text)
-        self.entry.select_range(self.tk.END, self.tk.END)
+        self.entry.select_range(tkinter.END, tkinter.END)
 
     def get_text(self):
         return self.entry.get().strip()
