@@ -32,13 +32,14 @@ def get_commands():
     """Get a sorted list of all commands available to the shell."""
     commands = set()
 
-    for dirname in map(Path, set(os.environ['PATH'].split(':'))):
+    for dirname in set(os.environ['PATH'].split(':')):
+        dirname = Path(dirname)
         if not dirname.is_dir():
             continue
 
         for command in dirname.iterdir():
             if command.is_file() and os.access(command, os.X_OK):
-                commands.add(str(command.name))
+                commands.add(command.name)
 
     return sorted(commands)
 
