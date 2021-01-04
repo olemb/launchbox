@@ -21,7 +21,6 @@ import sys
 import tkinter
 import tkinter.font
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
 
 __author__ = 'Ole Martin Bjorndalen'
 __email__ = 'ombdalen@gmail.com'
@@ -77,12 +76,7 @@ class Completer:
 
 class Launcher:
     def __init__(self):
-        # Run this is the background so we can collect commands
-        # and initialize Tk at the same time.
-        executor = ThreadPoolExecutor(max_workers=1)
-        self.commands_future = executor.submit(get_commands)
-        # The completer will be created at the first keypress.
-        self.completer = None
+        self.completer = Completer(get_commands())
 
         window = tkinter.Tk(className='launchbox')
         window.configure(background='black')
@@ -113,10 +107,6 @@ class Launcher:
             self.window.quit()
 
     def handle_key(self, event):
-        if self.completer is None:
-            commands = self.commands_future.result()
-            self.completer = Completer(commands)
-
         # event state values.
         SHIFT = 1
         # CTRL = 4
