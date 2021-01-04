@@ -11,10 +11,6 @@ Keys:
     enter           - run command
     escape          - close window
 
-Launchbox will use the shell found in $SHELL or default to
-/bin/sh. It uses the shell to get available commands (found by run
-the shell and having it echo its $PATH) and to run the command (which
-can be a full command line).
 """
 import os
 import sys
